@@ -4,7 +4,7 @@ import static org.apache.commons.logging.impl.SimpleLog.*;
 
 /**
  * Log levels defined for Traceable.
- * 
+ *
  * @author Aristónico Silvano Negro Diez.
  */
 public enum Level {
@@ -31,8 +31,11 @@ public enum Level {
     ALL(LOG_LEVEL_ALL),
 
     /** Enable no logging levels */
-    OFF(LOG_LEVEL_OFF);
-    
+    OFF(LOG_LEVEL_OFF),
+
+    /** Not defined level */
+    NULL(LOG_LEVEL_OFF);
+
 	/** {@link int} value associated to the level. */
 	private int level;
 
@@ -54,5 +57,17 @@ public enum Level {
     public int getLevel() {
 
     	return this.level;
+    }
+
+    /**
+     * Check if the {@link Level} is not {@value Level#NULL}.
+     *
+     * @param level the {@link Level} to check.
+     *
+     * @return {@value true} if the {@link Level} is {@value Level#NULL}.
+     */
+    public static boolean isNotNull(Level level) {
+
+        return !NULL.equals(level);
     }
 }

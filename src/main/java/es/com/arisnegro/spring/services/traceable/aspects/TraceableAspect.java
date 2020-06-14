@@ -13,6 +13,8 @@ import org.aspectj.lang.reflect.MethodSignature;
 
 import es.com.arisnegro.spring.services.traceable.annotations.Traceable;
 import es.com.arisnegro.spring.services.traceable.data.TraceableData;
+import es.com.arisnegro.spring.services.traceable.enums.Level;
+import es.com.arisnegro.spring.services.traceable.printers.TraceablePrinter;
 
 /**
  * Aspect used to trace the execution methods.
@@ -33,53 +35,58 @@ public class TraceableAspect {
 
 		TraceableData traceableData = this.buildTraceableData(joinPoint);
 
-		this.logStartMethod(traceableData);
+		this.logStartMethod(traceableData, joinPoint);
 
 	    Object returnValue = joinPoint.proceed();
 
-	    this.logEndMethod(traceableData);
+	    this.logEndMethod(traceableData, returnValue);
 		return returnValue;
 	}
 
-	private void logStartMethod(TraceableData traceableData) {
+	private void logStartMethod(TraceableData traceableData, ProceedingJoinPoint joinPoint) {
 
-        this.log(traceableData, () -> String.format("Start %s", traceableData.getMethodName()));
+        Level levelStart = Level.isNotNull(traceableData.getTraceable().levelStart())
+                               ? traceableData.getTraceable().levelStart()
+                               : traceableData.getTraceable().level();
+        this.log(traceableData.getLog(), levelStart , () -> TraceablePrinter.printStart(traceableData, joinPoint));
 	}
 
-	private void logEndMethod(TraceableData traceableData) {
+	private void logEndMethod(TraceableData traceableData, Object returnValue) {
 
-		this.log(traceableData, () -> String.format("End %s", traceableData.getMethodName()));
-
+	    Level levelEnd = Level.isNotNull(traceableData.getTraceable().levelEnd())
+                ? traceableData.getTraceable().levelEnd()
+                : traceableData.getTraceable().level();
+		this.log(traceableData.getLog(), levelEnd, () -> TraceablePrinter.printEnd(traceableData, returnValue));
 	}
 
-	private void log(TraceableData traceableData, Supplier<String> messageSupplier) {
+	private void log(Log logger, Level level, Supplier<String> messageSupplier) {
 
-		if (this.isLogEnabled(traceableData)) {
+		if (this.isLogEnabled(logger, level)) {
 
 			String message = messageSupplier.get();
-			switch (traceableData.getTraceable().level()) {
+			switch (level) {
 			case TRACE:
-				traceableData.getLog().trace(message);
+				logger.trace(message);
 				break;
 			case DEBUG:
-				traceableData.getLog().debug(message);
+				logger.debug(message);
 				break;
 			case INFO:
-				traceableData.getLog().info(message);
+				logger.info(message);
 				break;
 			case WARN:
-				traceableData.getLog().warn(message);
+				logger.warn(message);
 				break;
 			case ERROR:
-				traceableData.getLog().error(message);
+				logger.error(message);
 				break;
 			case FATAL:
-				traceableData.getLog().fatal(message);
-				break;
+			    logger.fatal(message);
 			case ALL:
-				traceableData.getLog().info(message);
+				logger.info(message);
 				break;
 			default:
+			    // OFF and NULL don't print messages
 			}
 		}
 	}
@@ -109,29 +116,31 @@ public class TraceableAspect {
 	    return traceable;
 	}
 
-	public boolean isLogEnabled(TraceableData traceableData) {
+	public boolean isLogEnabled(Log logger, Level level) {
 
-		if (traceableData.getLog() == null || traceableData.getTraceable() == null) {
+        if (logger == null || level == null) {
 
 			return false;
 		}
-		switch (traceableData.getTraceable().level()) {
+		switch (level) {
 		case TRACE:
-			return traceableData.getLog().isTraceEnabled();
+			return logger.isTraceEnabled();
 		case DEBUG:
-			return traceableData.getLog().isDebugEnabled();
+			return logger.isDebugEnabled();
 		case INFO:
-			return traceableData.getLog().isInfoEnabled();
+			return logger.isInfoEnabled();
 		case WARN:
-			return traceableData.getLog().isWarnEnabled();
+			return logger.isWarnEnabled();
 		case ERROR:
-			return traceableData.getLog().isErrorEnabled();
+			return logger.isErrorEnabled();
 		case FATAL:
-			return traceableData.getLog().isFatalEnabled();
+            return logger.isFatalEnabled();
 		case ALL:
 			return true;
 		case OFF:
-			return false;
+            return false;
+		case NULL:
+            return false;
 		default:
 			return false;
 		}
