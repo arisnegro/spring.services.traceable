@@ -35,24 +35,24 @@ public enum Level {
     
 	/** {@link int} value associated to the level. */
 	private int level;
-    
+
     /**
      * Log levels defined for Traceable.
-     * 
+     *
      * @param level {@link int} value associated to the level
      */
     Level(int level) {
-    	
+
     	this.level = level;
     }
-    
+
     /**
      * {@link int} value associated to the level.
-     * 
+     *
      * @return the level.
      */
     public int getLevel() {
-    	
+
     	return this.level;
     }
 }

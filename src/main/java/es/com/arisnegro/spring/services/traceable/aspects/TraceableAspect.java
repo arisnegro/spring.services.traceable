@@ -8,6 +8,7 @@ import org.apache.commons.logging.LogFactory;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 
 import es.com.arisnegro.spring.services.traceable.annotations.Traceable;
@@ -15,40 +16,46 @@ import es.com.arisnegro.spring.services.traceable.data.TraceableData;
 
 /**
  * Aspect used to trace the execution methods.
- * 
+ *
  * @author Aristónico Silvano Negro Diez
  */
 @Aspect
 public class TraceableAspect {
 
-	@Around("@annotation(es.com.arisnegro.spring.services.traceable.annotations.Traceable)")
+    @Pointcut("@annotation(com.inditex.finc.finserin.commons.traceable.annotations.Traceable)")
+    public void traceableMethod() {}
+
+    @Pointcut("within(@com.inditex.finc.finserin.commons.traceable.annotations.Traceable *)")
+    public void serviceBean() {}
+
+	@Around("traceableMethod() || serviceBean()")
 	public Object logExecutionTime(ProceedingJoinPoint joinPoint) throws Throwable {
-		
+
 		TraceableData traceableData = this.buildTraceableData(joinPoint);
-		
+
 		this.logStartMethod(traceableData);
-		
+
 	    Object returnValue = joinPoint.proceed();
-	    
+
 	    this.logEndMethod(traceableData);
 		return returnValue;
 	}
 
 	private void logStartMethod(TraceableData traceableData) {
-		
+
         this.log(traceableData, () -> String.format("Start %s", traceableData.getMethodName()));
 	}
 
 	private void logEndMethod(TraceableData traceableData) {
-		
+
 		this.log(traceableData, () -> String.format("End %s", traceableData.getMethodName()));
-		
+
 	}
 
 	private void log(TraceableData traceableData, Supplier<String> messageSupplier) {
-		
+
 		if (this.isLogEnabled(traceableData)) {
-		
+
 			String message = messageSupplier.get();
 			switch (traceableData.getTraceable().level()) {
 			case TRACE:
@@ -74,37 +81,38 @@ public class TraceableAspect {
 				break;
 			default:
 			}
-		}		
+		}
 	}
 
 	private TraceableData buildTraceableData(ProceedingJoinPoint joinPoint) {
 
 		// Convenience variables
-		final Log log = LogFactory.getLog(joinPoint.getTarget().getClass());
+	    final Log logger = LogFactory.getLog(joinPoint.getTarget().getClass());
 		String methodName = joinPoint.getSignature().getName();
 		Traceable traceable = this.getAnnotation(joinPoint);
-		
-		return new TraceableData(log, methodName, traceable);
+
+		return new TraceableData(logger, methodName, traceable);
 	}
 
-	private Traceable getAnnotation(ProceedingJoinPoint joinPoint) {
-		
+	@SuppressWarnings("unchecked")
+    private Traceable getAnnotation(ProceedingJoinPoint joinPoint) {
+
 		MethodSignature signature = (MethodSignature) joinPoint.getSignature();
 	    Method method = signature.getMethod();
 
 	    Traceable traceable = method.getAnnotation(Traceable.class);
-	    
+
 	    if (traceable == null) {
-	    	
-	    	traceable = signature.getClass().getAnnotation(Traceable.class);
+
+	    	traceable = (Traceable)signature.getDeclaringType().getAnnotation(Traceable.class);
 	    }
 	    return traceable;
 	}
 
 	public boolean isLogEnabled(TraceableData traceableData) {
-		
+
 		if (traceableData.getLog() == null || traceableData.getTraceable() == null) {
-			
+
 			return false;
 		}
 		switch (traceableData.getTraceable().level()) {

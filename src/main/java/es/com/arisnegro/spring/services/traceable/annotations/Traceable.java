@@ -13,7 +13,7 @@ import es.com.arisnegro.spring.services.traceable.enums.Level;
 
 /**
  * Each invocation of the annotated spring service/method is traced.
- * 
+ *
  * @author Aristónico Silvano Negro Diez
  */
 @Documented
