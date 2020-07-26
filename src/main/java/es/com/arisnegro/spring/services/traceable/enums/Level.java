@@ -27,9 +27,6 @@ public enum Level {
     /** "Fatal" level logging. */
     FATAL(LOG_LEVEL_FATAL),
 
-    /** Enable all logging levels */
-    ALL(LOG_LEVEL_ALL),
-
     /** Enable no logging levels */
     OFF(LOG_LEVEL_OFF),
 

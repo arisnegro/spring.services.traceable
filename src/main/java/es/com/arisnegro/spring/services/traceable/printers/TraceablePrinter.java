@@ -58,13 +58,9 @@ public class TraceablePrinter {
         for (int i=0; i < traceableData.getTraceable().inputArgsIndex().length; i++) {
 
             int argIndex = traceableData.getTraceable().inputArgsIndex()[i];
-
-            if (argIndex >= joinPoint.getArgs().length) {
-
-                // Invalid value the last argument is set
-                argIndex = joinPoint.getArgs().length -1;
-            }
-            outputArgs[i] = joinPoint.getArgs()[argIndex];
+            outputArgs[i] = argIndex < joinPoint.getArgs().length
+            		            ? joinPoint.getArgs()[argIndex]
+            		            : String.format("No input #%d", argIndex);
         }
         return buildString(outputArgs);
     }
@@ -74,7 +70,10 @@ public class TraceablePrinter {
      */
     private static String buildString(Object[] objects) {
 
-        return Arrays.stream(objects).map(Objects::toString).collect(Collectors.joining(", "));
+        return Arrays
+        		.stream(objects)
+        		.map(Objects::toString)
+        		.collect(Collectors.joining(", "));
     }
 
     /**

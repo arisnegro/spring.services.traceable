@@ -24,10 +24,10 @@ import es.com.arisnegro.spring.services.traceable.printers.TraceablePrinter;
 @Aspect
 public class TraceableAspect {
 
-    @Pointcut("@annotation(com.inditex.finc.finserin.commons.traceable.annotations.Traceable)")
+    @Pointcut("@annotation(es.com.arisnegro.spring.services.traceable.annotations.Traceable)")
     public void traceableMethod() {}
 
-    @Pointcut("within(@com.inditex.finc.finserin.commons.traceable.annotations.Traceable *)")
+    @Pointcut("within(@es.com.arisnegro.spring.services.traceable.annotations.Traceable *)")
     public void serviceBean() {}
 
 	@Around("traceableMethod() || serviceBean()")
@@ -82,8 +82,6 @@ public class TraceableAspect {
 				break;
 			case FATAL:
 			    logger.fatal(message);
-			case ALL:
-				logger.info(message);
 				break;
 			default:
 			    // OFF and NULL don't print messages
@@ -135,8 +133,6 @@ public class TraceableAspect {
 			return logger.isErrorEnabled();
 		case FATAL:
             return logger.isFatalEnabled();
-		case ALL:
-			return true;
 		case OFF:
             return false;
 		case NULL:
