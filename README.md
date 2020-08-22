@@ -59,7 +59,7 @@ The attributes that can be configured are the next:
 * inputArgsIndex
 * printOutput
 
-If you want to know the meaning of each attribute, see the javadoc of [Traceable.java](./blob/v0.0.2-SNAPSHOT/src/main/java/es/com/arisnegro/spring/services/traceable/annotations/Traceable.java)
+If you want to know the meaning of each attribute, see the javadoc of [Traceable.java](./src/main/java/es/com/arisnegro/spring/services/traceable/annotations/Traceable.java)
 
 ### 5. Output example.
 
