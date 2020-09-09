@@ -57,11 +57,11 @@ public enum Level {
     }
 
     /**
-     * Check if the {@link Level} is not {@value Level#NULL}.
+     * Check if the {@link Level} is not {@code NULL}.
      *
      * @param level the {@link Level} to check.
      *
-     * @return {@value true} if the {@link Level} is {@value Level#NULL}.
+     * @return {@code true} if the {@link Level} is {@code NULL}.
      */
     public static boolean isNotNull(Level level) {
 

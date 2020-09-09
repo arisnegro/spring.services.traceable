@@ -19,6 +19,11 @@ public class TraceablePrinter {
 
     /**
      * Logs the "Start..." message from method execution.
+     * 
+     * @param traceableData the context for trace a method.
+     * @param joinPoint {@link ProceedingJoinPoint} with the context data of the advised method.
+     * 
+     * @return the text to be printed when the method execution is starting.
      */
     public static String printStart(TraceableData traceableData, ProceedingJoinPoint joinPoint) {
 
@@ -37,6 +42,11 @@ public class TraceablePrinter {
 
     /**
      * Build the arguments to be output.
+     * 
+     * @param traceableData the context for trace a method.
+     * @param joinPoint {@link ProceedingJoinPoint} with the context data of the advised method.
+     * 
+     * @return the text that represents the arguments.
      */
     private static String buildArgumentsToLog(TraceableData traceableData, ProceedingJoinPoint joinPoint) {
 
@@ -67,6 +77,10 @@ public class TraceablePrinter {
 
     /**
      * Build the {@link String} representation of an array.
+     * 
+     * @param objects the array of objects.
+     * 
+     * @return the {@link String} built from the input objects.
      */
     private static String buildString(Object[] objects) {
 
@@ -78,6 +92,11 @@ public class TraceablePrinter {
 
     /**
      * Logs the "End..." message from method execution.
+     * 
+     * @param traceableData the context for trace a method.
+     * @param returnValue the returned value to be appended to the trace.
+     * 
+     * @return the text to be printed when the method execution is ended.
      */
     public static String printEnd(TraceableData traceableData, Object returnValue) {
 
