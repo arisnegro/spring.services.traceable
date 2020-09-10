@@ -9,7 +9,37 @@
 	<packaging>jar</packaging>
 
 	<name>services.traceable</name>
-	<url>http://maven.apache.org</url>
+	<description>
+	    Library to trace the calls to spring services easily using annotations.
+	    The source code of the services will be cleaner due to less calls to send log messages.
+        Each method of the services can be configured to print messages for specific log level,
+        to print only the start or the end of the method or even to print selected input arguments and/or the return value.
+	</description>
+	<licenses>
+	    <license>
+	        <name>GPL-3.0 License</name>
+	        <url>https://github.com/arisnegro/spring.services.traceable/blob/master/LICENSE</url>
+	        <distribution>repo</distribution>
+	        <comments>The GNU General Public License is a free, copyleft license for software and other kinds of works.</comments>
+	    </license>
+	</licenses>
+	<developers>
+	    <developer>
+	       <id>arisnegro</id>
+	       <name>Aristónico Silvano Negro Diez</name>
+	       <roles>
+                <role>architect</role>
+                <role>developer</role>
+            </roles>
+            <timezone>+2</timezone>
+	    </developer>
+	</developers>
+	<url>https://github.com/arisnegro/spring.services.traceable</url>
+	<scm>
+	    <connection>scm:git:</connection>
+	    <tag>0.0.2</tag>
+	    <url>https://github.com/arisnegro/spring.services.traceable</url>
+	</scm>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
